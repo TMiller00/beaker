@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TMiller00/beaker/llm"
+	"github.com/TMiller00/beaker/providers"
 	"github.com/joho/godotenv"
 )
 
@@ -16,7 +16,7 @@ func main() {
 	}
 
 	anthropicApiKey := os.Getenv("ANTHROPIC_API_KEY")
-	var client llm.Client = llm.NewAnthropicClient(anthropicApiKey)
+	var client providers.Client = providers.NewAnthropicClient(anthropicApiKey)
 
 	response, err := client.CreateMessage(
 		context.TODO(),
