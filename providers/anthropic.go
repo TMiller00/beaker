@@ -17,14 +17,20 @@ func NewAnthropicClient(apiKey string) *AnthropicClient {
 	}
 }
 
-func (a *AnthropicClient) CreateMessage(ctx context.Context, model string, maxTokens int, prompt string) (string, error) {
-	message, err := a.client.Messages.New(ctx, anthropic.MessageNewParams{
+func (a *AnthropicClient) CreateMessage(ctx context.Context, model string, maxTokens int, prompt string, systemPrompt ...string) (string, error) {
+	params := anthropic.MessageNewParams{
 		Model:     anthropic.Model(model),
 		MaxTokens: int64(maxTokens),
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock(prompt)),
 		},
-	})
+	}
+
+	if len(systemPrompt) > 0 && systemPrompt[0] != "" {
+		params.System = []anthropic.TextBlockParam{{Text: systemPrompt[0]}}
+	}
+
+	message, err := a.client.Messages.New(ctx, params)
 	if err != nil {
 		return "", err
 	}
